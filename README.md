@@ -1,58 +1,102 @@
-﻿# FIFA 22 Player Segmentation with K-Means
+# Mercedes Projection-to-Camera Geometry Case Study
 
-This project builds a portfolio-grade clustering workflow on FIFA 22 player data with strong emphasis on validation, outlier handling, and interpretable insights.
+This repository packages a compact computer-vision case study around projected circle detection, 2D homography matching, and 3D triangulation analysis. The goal is not just to show working code, but to show the reasoning, validation, and failure analysis that matter in production CV work and technical interviews.
 
-## Project Goal
-Cluster football players into meaningful groups using K-Means so scouting, salary benchmarking, and talent segmentation can be done in a data-driven way.
+## What This Repository Demonstrates
 
-## Datasets
-- `data/players_22.csv`
-- Optional historical files are available in `data/` for future temporal analysis.
+1. Detecting a structured projected pattern in both projector-space and camera-space images.
+2. Recovering 40 matched 2D correspondences with a homography-based pipeline.
+3. Testing camera/projector ray back-projection conventions for 3D reconstruction.
+4. Triangulating 3D points and fitting a wall plane.
+5. Comparing theoretical consistency against empirical consistency when calibration assumptions disagree with observed data.
 
-## Main Notebook
-- `K-means_portfolio.ipynb`
+## Repository Structure
 
-The notebook includes:
-1. Data loading and schema checks
-2. Missing-value and duplicate validation
-3. Outlier analysis using IQR
-4. Feature engineering (`log1p` for `wage_eur` and `value_eur`)
-5. Robust scaling to reduce outlier influence
-6. K selection with multiple metrics:
-   - Inertia (elbow)
-   - Silhouette score
-   - Davies-Bouldin index
-7. Final K-Means training and scoring
-8. Cluster profiling and top-player interpretation
-9. PCA visualization of cluster separation
-10. Export of report artifacts
+- [notebooks/Mercedes.ipynb](./notebooks/Mercedes.ipynb): Task 1 pipeline for blob detection, ordering, homography matching, and output generation.
+- [notebooks/Mercedes_task2_signcheck.ipynb](./notebooks/Mercedes_task2_signcheck.ipynb): Task 2 pipeline for sign-convention-aware triangulation and plane fitting using the fictitious points from the assignment.
+- [notebooks/matched_points_homography_refined_3848x2168.csv](./notebooks/matched_points_homography_refined_3848x2168.csv): 40 matched projector-to-camera correspondences from Task 1.
+- `notebooks/00_*.png` to `07_*.png`: Task 1 visual artifacts used for debugging and presentation.
+- [docs/INTERVIEW_GUIDE.md](./docs/INTERVIEW_GUIDE.md): structured explanation of decisions, assumptions, and how to present the work to hiring managers.
+- `data/Aufgabe_2_projection_circles.png`, `data/Aufgabe_2_photo_circles.png`: the two images used for the Mercedes CV case study.
 
-## Why This Is Portfolio-Ready
-- Reproducible workflow with fixed random seed
-- Transparent preprocessing and model-selection logic
-- Business-friendly interpretation (not just algorithm output)
-- Saved artifacts for presentation and downstream use
+## Task 1 Summary
 
-## Outputs
-Generated into `reports/`:
-- `kmeans_k_selection_metrics.csv`
-- `feature_outlier_report.csv`
-- `players22_clustered.csv`
+Task 1 detects the ring pattern in a projector image and a captured camera image, then establishes 40 correspondences.
+
+Key outputs:
+
+- 40 projector centroids detected
+- 40 camera centroids detected
+- 40/40 unique homography-based matches
+- mean reprojection error: `3.219 px`
+- max reprojection error: `6.145 px`
+
+Key implementation choices:
+
+- `PROJECTOR_THRESH = 50`
+- `CAMERA_THRESH = 180`
+- `PROJ_AREA_MIN, PROJ_AREA_MAX = 40, 300`
+- `CAM_AREA_MIN, CAM_AREA_MAX = 2200, 7500`
+
+These values were tuned empirically to keep the expected 40 valid connected components while rejecting small noise fragments and merged bright regions.
+
+## Task 2 Summary
+
+Task 2 investigates 3D reconstruction from matched projector/camera points under different sign and transform conventions.
+
+Two interpretations were evaluated:
+
+1. **Theory-aligned interview convention**
+   - use `T_C_from_P` directly
+   - use `+x right`, `+y up`, `+z forward`
+   - implement `y_up=True` in back-projection
+
+2. **Empirically best reconstruction convention for real matched labels**
+   - use `inv(T_C_from_P)`
+   - use `y_down` back-projection (`y_up=False`)
+
+The repository keeps the first convention as the main interview notebook because it aligns best with the provided assignment statement and is easier to defend conceptually. The second convention is documented in the interview guide as the empirically better fit for the real matched CSV points.
+
+### Main Reported Task 2 Result
+
+From [notebooks/Mercedes_task2_signcheck.ipynb](./notebooks/Mercedes_task2_signcheck.ipynb), using the fictitious point pairs and the theory-aligned convention:
+
+- `s>=0: 2/3`
+- `l>=0: 2/3`
+- `Z>0: 2/3`
+- ray-gap min/mean/max: `0.180876 / 0.272489 / 0.425231 m`
+- fitted plane:
+  - normal `[-0.33719266, -0.94141559, 0.00614748]`
+  - equation `-0.337193 X -0.941416 Y +0.006147 Z -0.087730 = 0`
 
 ## How To Run
-1. Create/activate a Python environment.
-2. Install dependencies:
-   ```bash
-   pip install pandas numpy matplotlib seaborn scikit-learn jupyter
-   ```
-3. Open and run:
-   - `K-means_portfolio.ipynb`
 
-## Suggested Next Improvements
-1. Compare K-Means with GMM and HDBSCAN.
-2. Add temporal drift analysis across FIFA 15-22.
-3. Move reusable logic into `src/` as functions/classes.
-4. Add automated tests for preprocessing and metric outputs.
+Use the `iot_ts` environment that was already used during development:
 
-## Author Notes
-The notebook is heavily commented by segment so each modeling decision is easy to explain in interviews and project walkthroughs.
+```powershell
+conda activate iot_ts
+```
+
+Run Task 1:
+
+```powershell
+d:\anaconda\envs\iot_ts\python.exe -m jupyter nbconvert --to notebook --execute --inplace notebooks/Mercedes.ipynb
+```
+
+Run Task 2:
+
+```powershell
+d:\anaconda\envs\iot_ts\python.exe -m jupyter nbconvert --to notebook --execute --inplace notebooks/Mercedes_task2_signcheck.ipynb
+```
+
+## Why This Is Useful For Hiring Managers
+
+This project shows more than a successful output image:
+
+- structured feature extraction from noisy imagery
+- practical homography matching
+- geometric reasoning about intrinsics, extrinsics, and sign conventions
+- validation using reprojection error, ray parameters, positive depth, and ray-gap diagnostics
+- willingness to document when the "theoretically clean" convention and the "empirically best" convention diverge
+
+That combination is more representative of real CV engineering work than a notebook that only produces a final number.

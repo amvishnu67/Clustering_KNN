@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local environment files
+.venv/
+
+# Legacy clustering artifacts that are not part of the CV portfolio packaging
+K-means.ipynb
+src/
+
+# Keep only the two CV images from data/
+data/*
+!data/Aufgabe_2_photo_circles.png
+!data/Aufgabe_2_projection_circles.png
+
+# Keep only the relevant notebooks and Task 1 artifacts
+notebooks/*
+!notebooks/00_camera_with_roi.png
+!notebooks/01_projector_binary.png
+!notebooks/02_camera_binary_roi.png
+!notebooks/03_projector_indexed.png
+!notebooks/04_camera_indexed.png
+!notebooks/05_camera_pred_vs_matched.png
+!notebooks/06_reprojection_error_plot.png
+!notebooks/07_reprojection_error_hist.png
+!notebooks/Mercedes.ipynb
+!notebooks/Mercedes_task2_signcheck.ipynb
+!notebooks/matched_points_homography_refined_3848x2168.csv
+
+# Legacy exploratory Task 2 scratch files
+notebooks/Mercedes_task2.ipynb
+notebooks/task2_code.py
+
+# Reports from the older clustering notebook are not part of the CV case study
+reports/*
