@@ -1,6 +1,6 @@
 # Mercedes Projection-to-Camera Geometry Case Study
 
-This repository packages a compact computer-vision case study around projected circle detection, 2D homography matching, and 3D triangulation analysis. The goal is not just to show working code, but to show the reasoning, validation, and failure analysis that matter in production CV work and technical interviews.
+This repository packages a compact computer-vision case study around projected circle detection, 2D homography matching, and 3D triangulation analysis. The goal is to present a complete structured-light reconstruction workflow with the reasoning, validation, and failure analysis needed to understand the result end-to-end.
 
 ## What This Repository Demonstrates
 
@@ -16,7 +16,7 @@ This repository packages a compact computer-vision case study around projected c
 - [notebooks/Mercedes_task2_signcheck.ipynb](./notebooks/Mercedes_task2_signcheck.ipynb): Task 2 pipeline for sign-convention-aware triangulation and plane fitting using the fictitious points from the assignment.
 - [notebooks/matched_points_homography_refined_3848x2168.csv](./notebooks/matched_points_homography_refined_3848x2168.csv): 40 matched projector-to-camera correspondences from Task 1.
 - `notebooks/00_*.png` to `07_*.png`: Task 1 visual artifacts used for debugging and presentation.
-- [docs/INTERVIEW_GUIDE.md](./docs/INTERVIEW_GUIDE.md): structured explanation of decisions, assumptions, and how to present the work to hiring managers.
+- [docs/CASE_STUDY_NOTES.md](./docs/CASE_STUDY_NOTES.md): structured explanation of decisions, assumptions, and interpretation of the final results.
 - `data/Aufgabe_2_projection_circles.png`, `data/Aufgabe_2_photo_circles.png`: the two images used for the Mercedes CV case study.
 
 ## Task 1 Summary
@@ -46,7 +46,7 @@ Task 2 investigates 3D reconstruction from matched projector/camera points under
 
 Two interpretations were evaluated:
 
-1. **Theory-aligned interview convention**
+1. **Theory-aligned assignment convention**
    - use `T_C_from_P` directly
    - use `+x right`, `+y up`, `+z forward`
    - implement `y_up=True` in back-projection
@@ -55,7 +55,7 @@ Two interpretations were evaluated:
    - use `inv(T_C_from_P)`
    - use `y_down` back-projection (`y_up=False`)
 
-The repository keeps the first convention as the main interview notebook because it aligns best with the provided assignment statement and is easier to defend conceptually. The second convention is documented in the interview guide as the empirically better fit for the real matched CSV points.
+The repository keeps the first convention as the main reported notebook because it aligns best with the provided assignment statement and is the cleanest theoretical interpretation. The second convention is documented in the case study notes as the empirically better fit for the real matched CSV points.
 
 ### Main Reported Task 2 Result
 
@@ -89,7 +89,7 @@ Run Task 2:
 d:\anaconda\envs\iot_ts\python.exe -m jupyter nbconvert --to notebook --execute --inplace notebooks/Mercedes_task2_signcheck.ipynb
 ```
 
-## Why This Is Useful For Hiring Managers
+## Engineering Value
 
 This project shows more than a successful output image:
 

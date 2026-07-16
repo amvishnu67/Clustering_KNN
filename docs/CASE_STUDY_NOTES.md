@@ -1,6 +1,6 @@
-# Interview Guide
+# Case Study Notes
 
-This document is the short narrative to use when walking a hiring manager through the repository.
+This document summarizes the intended narrative for the repository and the reasoning behind the final reported results.
 
 ## Recommended Story
 
@@ -9,7 +9,7 @@ Frame the work as a two-stage CV pipeline:
 1. **Task 1** solves structured 2D detection and correspondence recovery.
 2. **Task 2** tests whether those correspondences are geometrically consistent under the provided calibration assumptions.
 
-That is the right level for a hiring discussion. It shows both implementation and scientific validation.
+That is the right level for a compact technical case study. It shows both implementation and scientific validation.
 
 ## Task 1 Talking Points
 
@@ -40,7 +40,7 @@ The provided intrinsics do not uniquely resolve whether the local sensor Y axis 
 
 ### Theory-aligned convention
 
-For interview use, the easiest convention to defend is:
+For the main reported case-study result, the cleanest convention is:
 
 - use `T_C_from_P` directly
 - interpret camera/projector axes as `+x right`, `+y up`, `+z forward`
@@ -67,7 +67,7 @@ v_c\\
 
 The same form is applied to the projector ray before rotating it into the camera frame.
 
-### What to say about the result
+### Interpretation of the result
 
 The fictitious points are the cleanest presentation case because they are explicitly allowed by the assignment.
 
@@ -97,7 +97,7 @@ One reconstructed point has negative depth and large ray-gap values remain. That
 - the chosen convention is theoretically aligned with the written assignment
 - the data still reveals inconsistency between theory and observation
 
-That is not a weakness in presentation. It shows that you know how to diagnose calibration-model mismatch instead of blindly trusting a pipeline.
+That is not a weakness in the case study. It shows that the pipeline includes explicit geometric validation instead of blindly trusting a reconstruction result.
 
 ## Empirical Cross-Check
 
@@ -114,9 +114,9 @@ For labels `2, 15, 24`, this gave:
 - `Z>0: 3/3`
 - ray-gap min/mean/max: `0.016998 / 0.050875 / 0.089626 m`
 
-This is worth mentioning only as a validation note:
+This is worth keeping as a validation note:
 
-- theory-aligned convention is easier to defend conceptually
+- theory-aligned convention is cleaner to defend conceptually
 - inverse-transform convention is better aligned with the real recovered correspondences
 
-That distinction is exactly the kind of judgment hiring managers expect from a strong CV engineer.
+That distinction is useful because it separates the assignment-consistent interpretation from the empirically best-fitting interpretation of the recovered data.
