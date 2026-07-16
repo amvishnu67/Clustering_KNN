@@ -30,6 +30,14 @@ Use [notebooks/Mercedes.ipynb](../notebooks/Mercedes.ipynb) and the generated PN
 
 That is a strong Task 1 result and should be shown clearly.
 
+### Figure guide
+
+- `00_camera_with_roi.png`: show how the scene was constrained before thresholding and connected-components analysis.
+- `03_projector_indexed.png`: show the stable row-major indexing of the projector pattern.
+- `05_camera_pred_vs_matched.png`: show geometric agreement between homography prediction and detected camera centroids.
+- `06_reprojection_error_plot.png`: show pointwise error magnitude over the 40 correspondences.
+- `07_reprojection_error_hist.png`: show that the residuals remain concentrated in a narrow range.
+
 ## Task 2 Talking Points
 
 Use [notebooks/Mercedes_task2_signcheck.ipynb](../notebooks/Mercedes_task2_signcheck.ipynb).
